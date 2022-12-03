@@ -1,23 +1,51 @@
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { get } from "../../utils/api";
 
-type Pokemon = {
-    name: string;
-    url: string;
-};
+import GridItem, { CardFlexGrid } from "../../components/pokemonList/GridItem";
+
+import { CustomButton } from "../../components/CustomButton";
+import { BasePokemonItemType, PokemonItemType } from "../../utils/pokemonTypes";
+import { PokemonModal } from "../PokemonModal/PokemonModal";
 
 export const Homepage = (): JSX.Element => {
-    const [pokemons, setPokemons] = useState<Pokemon[]>([]);
+    const [pokemons, setPokemons] = useState<BasePokemonItemType[]>([]);
     const [nextPage, setNextPage] = useState<string | null>(null);
+    const [isModalShown, setIsModalShown] = useState(false);
+    const [selectedPokemon, setSelectedPokemon] =
+        useState<PokemonItemType | null>(null);
+    const [selectedPokemonSpecies, setSelectedPokemonSpecies] = useState(null);
 
     useEffect(() => {
-        get(process.env.REACT_APP_API_URL + "/pokemon").then((response) => {
+        // Fetch the 200 pokemons
+        get(process.env.REACT_APP_API_URL + "/pokemon?limit=200").then(
+            (response) => {
+                response.json().then(function (data) {
+                    setPokemons(data.results);
+                    setNextPage(data.next);
+                });
+            }
+        );
+    }, []);
+
+    const getPokemonSpecies = (pokemon: PokemonItemType) => {
+        get(pokemon.species.url).then((response) => {
             response.json().then(function (data) {
-                setPokemons(data.results);
-                setNextPage(data.next);
+                console.log(data);
+                setSelectedPokemonSpecies(data);
             });
         });
-    }, []);
+    };
+
+    const loadFullPokemon = (pokemon: BasePokemonItemType) => {
+        get(pokemon.url).then((response) => {
+            response.json().then(function (data) {
+                console.log(data);
+                getPokemonSpecies(data);
+                setSelectedPokemon(data);
+                setIsModalShown(true);
+            });
+        });
+    };
 
     const loadMore = () => {
         if (nextPage) {
@@ -30,17 +58,42 @@ export const Homepage = (): JSX.Element => {
         }
     };
 
-    console.log(pokemons);
+    const openPokemon = (pokemon: BasePokemonItemType) => {
+        loadFullPokemon(pokemon);
+        setIsModalShown(true);
+    };
+
+    const onModalClose = () => {
+        setIsModalShown(false);
+        setSelectedPokemon(null);
+    };
 
     return (
         <div>
-            <h1>Homepage</h1>
-            <ul>
+            <PokemonModal
+                selectedPokemon={selectedPokemon}
+                selectedPokemonSpecies={selectedPokemonSpecies}
+                isModalShown={isModalShown}
+                onModalClose={onModalClose}
+            />
+            <h1
+                style={{
+                    padding: "6px",
+                }}
+            >
+                Pokedex
+            </h1>
+            <CardFlexGrid>
                 {pokemons.map((pokemon) => (
-                    <li key={pokemon.name}>{pokemon.name}</li>
+                    <GridItem
+                        key={pokemon.name}
+                        pokemon={pokemon}
+                        action={() => openPokemon(pokemon)}
+                    />
                 ))}
-            </ul>
-            <button onClick={loadMore}>Load more</button>
+            </CardFlexGrid>
+
+            <CustomButton onClick={loadMore}>Load more</CustomButton>
         </div>
     );
 };

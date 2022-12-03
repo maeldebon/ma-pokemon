@@ -13,7 +13,7 @@
     "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
-        "plugin:react-hooks/recommended"
+        "plugin:react/recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "plugins": ["@typescript-eslint"],
@@ -31,7 +31,7 @@
             {
                 "selector": "typeAlias",
                 "format": ["PascalCase"],
-                "suffix": ["Props", "T"]
+                "suffix": ["Props", "Type"]
             }
         ],
         "linebreak-style": 0,
