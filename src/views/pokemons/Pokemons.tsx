@@ -1,9 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { get } from "../../utils/api";
 
 import GridItem, { CardFlexGrid } from "../../components/gridItem/GridItem";
-
-import { BasePokemonItemType, PokemonItemType } from "../../utils/types";
 import { PokemonModal } from "../../components/pokemonModal/PokemonModal";
 import { CustomButton } from "../../components/CustomButton";
 import { SectionTitle } from "../../components/SectionTitle";
@@ -11,6 +8,8 @@ import {
     FavoritesCardFlexGrid,
     NoFavorites,
 } from "../../components/ListComponents";
+import { get } from "../../utils/api";
+import { BasePokemonItemType, PokemonItemType } from "../../utils/types";
 
 export type FavoritePokemonItemType = {
     name: string;

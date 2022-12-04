@@ -1,9 +1,9 @@
 import React from "react";
-import { getPokemonIdFromUrl } from "../../../utils/functions";
-import { PokemonSpeciesType } from "../../../utils/types";
 import { ModalSection, ModalSectionTitle } from "../../modal/components";
 import { CustomImage, PokemonItemRow, PokemonRow } from "../components/Content";
 import { CapitalizedText } from "../components/Text";
+import { getPokemonIdFromUrl } from "../../../utils/functions";
+import { PokemonSpeciesType } from "../../../utils/types";
 
 export const RelatedSection = ({
     evolutions,

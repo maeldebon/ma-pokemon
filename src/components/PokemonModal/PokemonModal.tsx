@@ -1,17 +1,19 @@
 import React, { useEffect } from "react";
 
 import { FaStar } from "react-icons/fa";
+
+import { Description } from "./sections/Description";
+import { Header } from "./sections/Header";
+import { RelatedSection } from "./sections/Related";
+
 import Modal from "../modal/Modal";
+import { PokemonModalContent } from "./components/Content";
+import { getPokemonIdFromUrl } from "../../utils/functions";
 import {
     PokemonEvolutionType,
     PokemonItemType,
     PokemonSpeciesType,
 } from "../../utils/types";
-import { PokemonModalContent } from "./components/Content";
-import { RelatedSection } from "./sections/Related";
-import { getPokemonIdFromUrl } from "../../utils/functions";
-import { Description } from "./sections/Description";
-import { Header } from "./sections/Header";
 
 type PokemonModalType = {
     isModalShown: boolean;

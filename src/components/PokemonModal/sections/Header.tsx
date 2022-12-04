@@ -1,9 +1,9 @@
 import React from "react";
-import { PokemonItemType, PokemonSpeciesType } from "../../../utils/types";
 import { CustomImage, PokemonHeader } from "../components/Content";
 import { CapitalizedText, TextGold, TextPurple } from "../components/Text";
-import PokemonTypeTagComponent from "../../Types";
 import { formatText } from "../../../utils/formatText";
+import { PokemonItemType, PokemonSpeciesType } from "../../../utils/types";
+import PokemonTypeTagComponent from "../../Types";
 
 export const Header = ({
     selectedPokemon,
