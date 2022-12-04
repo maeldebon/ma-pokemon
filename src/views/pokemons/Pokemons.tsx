@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 
 import GridItem, { CardFlexGrid } from "../../components/gridItem/GridItem";
-import { PokemonModal } from "../../components/pokemonModal/PokemonModal";
+import { PokemonModal } from "../../components/customModal/PokemonModal";
 import { CustomButton } from "../../components/CustomButton";
 import { SectionTitle } from "../../components/SectionTitle";
 import {
