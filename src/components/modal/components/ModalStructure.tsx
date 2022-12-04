@@ -41,6 +41,7 @@ export const ModalSectionTitle = styled.span`
     font-weight: 700;
     font-size: 18px;
     margin-bottom: 12px;
+    margin-top: 1rem;
 `;
 
 export const ModalSectionItem = styled.div`

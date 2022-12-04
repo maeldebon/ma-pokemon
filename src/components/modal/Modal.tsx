@@ -1,4 +1,6 @@
 import React from "react";
+import { FaTimes } from "react-icons/fa";
+import styled from "styled-components";
 
 import {
     ModalBody,
@@ -19,14 +21,18 @@ interface ModalProps {
     onClose: () => void;
     content: React.ReactNode;
     leftActionComponent?: React.ReactNode;
-    rightActionComponent?: React.ReactNode;
 }
+
+const CloseIcon = styled(FaTimes)`
+    curose: pointer;
+    font-size: 1.5rem;
+    padding-right: 1rem;
+`;
 
 export const Modal = ({
     isShown,
     title,
     leftActionComponent,
-    rightActionComponent,
     content,
     onClose,
 }: ModalProps) => {
@@ -45,7 +51,7 @@ export const Modal = ({
                         </ModalHeaderLeftAction>
                         <ModalHeaderTitle>{title}</ModalHeaderTitle>
                         <ModalHeaderRightAction>
-                            {rightActionComponent}
+                            <CloseIcon onClick={onClose} />
                         </ModalHeaderRightAction>
                     </ModalHeader>
                     <ModalBody>{content}</ModalBody>

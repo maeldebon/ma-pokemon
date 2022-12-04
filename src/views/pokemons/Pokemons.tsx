@@ -4,9 +4,13 @@ import { get } from "../../utils/api";
 import GridItem, { CardFlexGrid } from "../../components/gridItem/GridItem";
 
 import { BasePokemonItemType, PokemonItemType } from "../../utils/types";
-import { PokemonModal } from "../../components/PokemonModal/PokemonModal";
+import { PokemonModal } from "../../components/pokemonModal/PokemonModal";
 import { CustomButton } from "../../components/CustomButton";
 import { SectionTitle } from "../../components/SectionTitle";
+import {
+    FavoritesCardFlexGrid,
+    NoFavorites,
+} from "../../components/ListComponents";
 
 export type FavoritePokemonItemType = {
     name: string;
@@ -143,15 +147,11 @@ export const Homepage = (): JSX.Element => {
                 <>
                     <SectionTitle>Favorites</SectionTitle>
                     {!favorites.length ? (
-                        <div
-                            style={{
-                                padding: "20px",
-                            }}
-                        >
+                        <NoFavorites>
                             {"You don't have any favorites yet."}
-                        </div>
+                        </NoFavorites>
                     ) : (
-                        <CardFlexGrid style={{ justifyContent: "flex-start" }}>
+                        <FavoritesCardFlexGrid>
                             {favorites.map((favorite) => (
                                 <GridItem
                                     key={favorite.name}
@@ -160,7 +160,7 @@ export const Homepage = (): JSX.Element => {
                                     action={() => openPokemon(favorite)}
                                 />
                             ))}
-                        </CardFlexGrid>
+                        </FavoritesCardFlexGrid>
                     )}
 
                     <SectionTitle>Pokemon List</SectionTitle>

@@ -23,6 +23,8 @@ const Card = styled.div`
     margin: 10px;
     cursor: pointer;
     width: 128px;
+    text-transform: capitalize;
+    align-items: center;
 
     &:hover {
         box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
@@ -37,18 +39,9 @@ interface GridItemProps {
 
 const GridItem = ({ pokemon, image, action }: GridItemProps) => {
     return (
-        <Card id="pokemon-grid-item" onClick={action}>
-            <div
-                style={{
-                    textTransform: "capitalize",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                }}
-            >
-                {image && <img src={image} alt={pokemon.name} />}
-                {pokemon.name}
-            </div>
+        <Card onClick={action}>
+            {image && <img src={image} alt={pokemon.name} />}
+            {pokemon.name}
         </Card>
     );
 };
