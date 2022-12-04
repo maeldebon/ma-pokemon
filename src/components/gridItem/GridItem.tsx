@@ -1,8 +1,7 @@
 import React from "react";
-import { FaStar } from "react-icons/fa";
 
 import styled from "styled-components";
-import { BasePokemonItemType } from "../../utils/pokemonTypes";
+import { BasePokemonItemType } from "../../utils/types";
 
 export const CardFlexGrid = styled.div`
     display: flex;
@@ -48,7 +47,6 @@ const GridItem = ({ pokemon, image, action }: GridItemProps) => {
                 }}
             >
                 {image && <img src={image} alt={pokemon.name} />}
-                {/* {image && <FaStar style={{ color: "gold" }} />} */}
                 {pokemon.name}
             </div>
         </Card>

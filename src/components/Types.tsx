@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { PokemonTypeName } from "../utils/pokemonTypes";
+import { PokemonTypeName, PokemonTypeType } from "../utils/types";
 
 const POKEMON_TYPE_COLORS: Record<PokemonTypeName, string> = {
     [PokemonTypeName.normal]: "#A8A878",
@@ -23,37 +23,19 @@ const POKEMON_TYPE_COLORS: Record<PokemonTypeName, string> = {
     [PokemonTypeName.fairy]: "#EE99AC",
 };
 
-interface PokemonTypeTagProps {
-    type:
-        | "normal"
-        | "fire"
-        | "water"
-        | "electric"
-        | "grass"
-        | "ice"
-        | "fighting"
-        | "poison"
-        | "ground"
-        | "flying"
-        | "psychic"
-        | "bug"
-        | "rock"
-        | "ghost"
-        | "dragon"
-        | "dark"
-        | "steel"
-        | "fairy";
-}
-
 const PokemonTypeTag = styled.div`
     color: white;
     padding: 0.5rem;
     border-radius: 4px;
 `;
 
-const PokemonTypeTagComponent = ({ type }: PokemonTypeTagProps) => {
+interface PokemonTypeTagComponentProps {
+    type: PokemonTypeType;
+}
+
+const PokemonTypeTagComponent = ({ type }: PokemonTypeTagComponentProps) => {
     const backgroundColor =
-        POKEMON_TYPE_COLORS[type as keyof typeof PokemonTypeName] || "gray";
+        POKEMON_TYPE_COLORS[type as keyof typeof PokemonTypeName] || "#A8A878";
     return (
         <PokemonTypeTag
             style={{

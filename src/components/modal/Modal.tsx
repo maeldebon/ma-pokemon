@@ -32,7 +32,12 @@ export const Modal = ({
 }: ModalProps) => {
     return isShown ? (
         <ModalOverlay>
-            <ModalWrapper aria-modal aria-hidden tabIndex={-1} role="dialog">
+            <ModalWrapper
+                aria-modal
+                aria-hidden="true"
+                tabIndex={-1}
+                role="dialog"
+            >
                 <ModalContent>
                     <ModalHeader>
                         <ModalHeaderLeftAction>
