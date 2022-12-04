@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 
-import { FaBookmark, FaTimes } from "react-icons/fa";
+import { FaStar, FaTimes } from "react-icons/fa";
 import Modal from "../../components/modal/Modal";
-import { PokemonItemType } from "../../utils/pokemonTypes";
+import { BasePokemonItemType, PokemonItemType } from "../../utils/pokemonTypes";
 import {
     ModalSection,
     ModalSectionTitle,
@@ -11,35 +11,86 @@ import {
 import { formatText } from "../../utils/text";
 import PokemonTypeTagComponent from "../../components/Types";
 
+const getPokemonIdFromUrl = (url: string) => {
+    const urlParts = url.split("/");
+    return urlParts[urlParts.length - 2];
+};
+
 type PokemonModalType = {
     isModalShown: boolean;
     onModalClose: () => void;
     selectedPokemon: PokemonItemType | null;
     selectedPokemonSpecies: any | null;
+    selectedPokemonEvolutions: any | null;
+    handleFavoriteClick: () => void;
+    isFavorite: boolean;
 };
 
 export const PokemonModal = ({
     selectedPokemon,
     selectedPokemonSpecies,
+    selectedPokemonEvolutions,
     isModalShown,
     onModalClose,
+    handleFavoriteClick,
+    isFavorite,
 }: PokemonModalType): JSX.Element => {
+    const [evolutions, setEvolutions] = React.useState<
+        { name: string; id: string }[]
+    >([]);
+
+    useEffect(() => {
+        if (selectedPokemonEvolutions) {
+            const chain = selectedPokemonEvolutions?.chain;
+
+            const evolutionList: { name: string; id: string }[] = [];
+            evolutionList.push({
+                name: chain?.species.name,
+                id: getPokemonIdFromUrl(chain?.species.url),
+            });
+            if (chain.evolves_to.length > 0) {
+                chain.evolves_to.forEach((evolution: any) => {
+                    evolutionList.push({
+                        name: evolution.species.name,
+                        id: getPokemonIdFromUrl(evolution.species.url),
+                    });
+                    if (evolution.evolves_to.length > 0) {
+                        evolution.evolves_to.forEach((evolution: any) => {
+                            evolutionList.push({
+                                name: evolution.species.name,
+                                id: getPokemonIdFromUrl(evolution.species.url),
+                            });
+                        });
+                    }
+                });
+            }
+            setEvolutions(evolutionList);
+        }
+    }, [selectedPokemonEvolutions]);
+
+    const onClose = () => {
+        onModalClose();
+        setEvolutions([]);
+    };
+
     return (
         <Modal
             title={`${selectedPokemon?.name}`}
             isShown={isModalShown}
-            onClose={onModalClose}
+            onClose={onClose}
             leftActionComponent={
-                <FaBookmark
+                <FaStar
+                    onClick={handleFavoriteClick}
                     style={{
                         cursor: "pointer",
                         fontSize: "1.5rem",
+                        color: isFavorite ? "gold" : "black",
                     }}
                 />
             }
             rightActionComponent={
                 <FaTimes
-                    onClick={onModalClose}
+                    onClick={onClose}
                     style={{
                         cursor: "pointer",
                         fontSize: "1.5rem",
@@ -51,21 +102,30 @@ export const PokemonModal = ({
                 <div
                     style={{
                         display: "flex",
+                        flexWrap: "wrap",
                         justifyContent: "space-between",
+                        flexGrow: 4,
+                        flex: "1 0 70%",
                     }}
                 >
                     <ModalSection>
-                        <ModalSectionTitle>Statistics</ModalSectionTitle>
-                        {selectedPokemon?.stats.map((stat) => (
-                            <ModalSectionItem key={stat.stat.name}>
-                                <div
-                                    style={{
-                                        textTransform: "capitalize",
-                                    }}
-                                >
-                                    {formatText(stat.stat.name)}
-                                </div>
-                                <div>{stat.base_stat}</div>
+                        <ModalSectionTitle>Description</ModalSectionTitle>
+                        <ModalSectionItem>
+                            {
+                                selectedPokemonSpecies?.flavor_text_entries[0]
+                                    .flavor_text
+                            }
+                        </ModalSectionItem>
+                        <ModalSectionTitle
+                            style={{
+                                marginTop: "1rem",
+                            }}
+                        >
+                            Abilities
+                        </ModalSectionTitle>
+                        {selectedPokemon?.abilities.map((ability) => (
+                            <ModalSectionItem key={ability.ability.name}>
+                                {formatText(ability.ability.name)}
                             </ModalSectionItem>
                         ))}
                     </ModalSection>
@@ -74,6 +134,7 @@ export const PokemonModal = ({
                             border: "2px solid gray",
                             padding: "1rem",
                             alignItems: "center",
+                            flex: "1 0",
                         }}
                     >
                         {selectedPokemonSpecies?.is_legendary && (
@@ -84,6 +145,16 @@ export const PokemonModal = ({
                                 }}
                             >
                                 Legendary
+                            </div>
+                        )}
+                        {selectedPokemonSpecies?.is_mythical && (
+                            <div
+                                style={{
+                                    color: "purple",
+                                    fontWeight: "bold",
+                                }}
+                            >
+                                Baby
                             </div>
                         )}
                         <img
@@ -130,97 +201,96 @@ export const PokemonModal = ({
                             ))}
                         </div>
                     </ModalSection>
+                    <ModalSection>
+                        <ModalSectionTitle
+                            style={{
+                                marginTop: "1rem",
+                            }}
+                        >
+                            Evolution chain
+                        </ModalSectionTitle>
+                        <ModalSectionItem
+                            style={{
+                                flexWrap: "wrap",
+                                justifyContent: "space-between",
+                            }}
+                        >
+                            {evolutions?.map((evolution) => (
+                                <div
+                                    key={evolution.id}
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        flexDirection: "column",
+                                    }}
+                                >
+                                    <img
+                                        src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${evolution.id}.png`}
+                                        alt={evolution.name}
+                                        style={{
+                                            width: "100px",
+                                            height: "100px",
+                                        }}
+                                    />
+                                    <div
+                                        style={{
+                                            textTransform: "capitalize",
+                                        }}
+                                    >
+                                        {evolution.name}
+                                    </div>
+                                </div>
+                            ))}
+                        </ModalSectionItem>
+                        <ModalSectionTitle
+                            style={{
+                                marginTop: "1rem",
+                            }}
+                        >
+                            {`Pokemon from the specie "${selectedPokemonSpecies?.name}"`}
+                        </ModalSectionTitle>
+                        <ModalSectionItem
+                            style={{
+                                flexWrap: "wrap",
+                                justifyContent: "space-between",
+                            }}
+                        >
+                            {selectedPokemonSpecies?.varieties.map(
+                                (variety: any) => (
+                                    <div
+                                        key={variety.pokemon.name}
+                                        style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            flexDirection: "column",
+                                        }}
+                                    >
+                                        <img
+                                            src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${getPokemonIdFromUrl(
+                                                variety.pokemon.url
+                                            )}.png`}
+                                            alt={variety.pokemon.name}
+                                            style={{
+                                                width: "100px",
+                                                height: "100px",
+                                            }}
+                                        />
+                                        <div
+                                            style={{
+                                                textTransform: "capitalize",
+                                            }}
+                                        >
+                                            {variety.pokemon.name}
+                                        </div>
+                                    </div>
+                                )
+                            )}
+                        </ModalSectionItem>
+                    </ModalSection>
                 </div>
             }
         />
     );
 };
-
-/*<div
-                        style={{
-                            display: "flex",
-                            flex: 1,
-                            flexDirection: "row",
-                            flexWrap: "wrap",
-                        }}
-                    >
-                        <ModalSection
-                            style={{
-                                alignContent: "end",
-                            }}
-                        >
-                            <ModalSectionTitle>Pictures</ModalSectionTitle>
-                            <ModalSectionItem>
-                                <img
-                                    src={selectedPokemon?.sprites.front_default}
-                                    alt="front"
-                                />
-                            </ModalSectionItem>
-                            <ModalSectionItem>
-                                <img
-                                    src={selectedPokemon?.sprites.front_shiny}
-                                    alt="front"
-                                />
-                            </ModalSectionItem>
-                        </ModalSection>
-                        <ModalSection>
-                            <ModalSectionTitle>Types</ModalSectionTitle>
-                            <div id="tags-wrapper" style={{ display: "flex" }}>
-                                {selectedPokemon.types.map((type) => (
-                                    <ModalSectionItem
-                                        key={"type-" + type.type.name}
-                                        style={{
-                                            flex: "none",
-                                            marginRight: "0.5rem",
-                                        }}
-                                    >
-                                        <PokemonTypeTagComponent
-                                            type={type.type.name}
-                                        />
-                                    </ModalSectionItem>
-                                ))}
-                            </div>
-                        </ModalSection>
-                        <ModalSection>
-                            <ModalSectionTitle>Abilities</ModalSectionTitle>
-                            {selectedPokemon.abilities.map((ability) => (
-                                <ModalSectionItem
-                                    key={"ability-" + ability.ability.name}
-                                >
-                                    {formatText(ability.ability.name)}
-                                    {ability.is_hidden ? " (hidden)" : ""}
-                                </ModalSectionItem>
-                            ))}
-                        </ModalSection>
-                        <ModalSection>
-                            <ModalSectionTitle>Statistics</ModalSectionTitle>
-                            <ModalSectionItem>
-                                Weight: {selectedPokemon.weight / 10} kg
-                            </ModalSectionItem>
-                            <ModalSectionItem>
-                                Height: {selectedPokemon.height / 10}m
-                            </ModalSectionItem>
-                            {selectedPokemon.stats.map((stat) => (
-                                <ModalSectionItem
-                                    key={"stat-" + stat.stat.name}
-                                >
-                                    {formatText(stat.stat.name)}:{" "}
-                                    {stat.base_stat}
-                                </ModalSectionItem>
-                            ))}
-                        </ModalSection>
-                        <ModalSection>
-                            <ModalSectionTitle>Game versions</ModalSectionTitle>
-                            {selectedPokemon.game_indices.map((game) => (
-                                <ModalSectionItem
-                                    key={"game-" + game.version.name}
-                                    style={{
-                                        display: "inline-block",
-                                        marginRight: "10px",
-                                    }}
-                                >
-                                    {formatText(game.version.name)}
-                                </ModalSectionItem>
-                            ))}
-                        </ModalSection>
-                                </div>*/

@@ -45,6 +45,7 @@ export type BasePokemonItemType = {
 };
 
 export type PokemonItemType = {
+    id: number;
     name: string;
     abilities: {
         ability: {

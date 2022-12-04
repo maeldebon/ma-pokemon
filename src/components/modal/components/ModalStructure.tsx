@@ -27,6 +27,7 @@ export const ModalContent = styled.div`
     margin: auto;
     border-radius: 5px;
     width: 50%;
+    min-width: 350px;
 `;
 
 export const ModalSection = styled.div`
